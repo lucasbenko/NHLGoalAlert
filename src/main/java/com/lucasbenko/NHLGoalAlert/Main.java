@@ -1,8 +1,8 @@
 package com.lucasbenko.NHLGoalAlert;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -13,15 +13,17 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static int GOAL_DELAY; // Change the delay for effects after API receives goal alert
-
     public static int FLASH_INTERVAL;
     public static int TIME_FLASHING;
     public static String GOVEE_API_KEY;
-    public static String MAC_ADDRESS;
+    public static String MAC_ADDRESS_LIGHT;
+    public static String MAC_ADDRESS_PLUG;
     public static String GOVEE_MODEL;
-    private static TeamNames FAVOURITE_TEAM; // Initialize variable for favourite team
+    public static String GOVEE_MODEL_PLUG;
+    private static TeamNames FAVOURITE_TEAM;
     public static void main(String[] args) {
         boolean valid = false;
+
         while(!valid){
             System.out.println("Please choose your favourite team:");
             Scanner input = new Scanner(System.in);
@@ -33,18 +35,18 @@ public class Main {
                 System.out.println(i + ".\t" + name.getTeamName().replace("_", " "));
             }
 
-            int choice;
 
             try {
-                choice = Integer.parseInt(input.nextLine());
-                if (choice > 32 || choice < 1){
+                int choice = Integer.parseInt(input.nextLine());
+                if (choice > 32 || choice < 1) {
                     throw new Exception();
                 }
+
                 valid = true;
                 FAVOURITE_TEAM = choices[choice];
                 System.out.println("Your Team: " + FAVOURITE_TEAM.getTeamName());
-            } catch (Exception e) {
-;               System.out.println("Please enter a valid number.");
+            } catch (Exception var9) {
+                System.out.println("Please enter a valid number.");
             }
 
         }
@@ -52,21 +54,7 @@ public class Main {
     }
 
     public static void initialize(){
-        Properties prop = new Properties();
-        String configName = "app.config";
-        try (FileInputStream fis = new FileInputStream(configName)) {
-            prop.load(fis);
-        } catch (IOException ex) {
-            System.out.println("app.config not found.");
-        }
-
-        GOAL_DELAY = Integer.parseInt(prop.getProperty("app.GOAL_DELAY"));
-        GOVEE_API_KEY = prop.getProperty("app.GOVEE_API_KEY");
-        TIME_FLASHING = Integer.parseInt(prop.getProperty("app.TIME_FLASHING"));
-        FLASH_INTERVAL = Integer.parseInt(prop.getProperty("app.FLASH_INTERVAL"));
-        GOVEE_MODEL = prop.getProperty("app.GOVEE_MODEL");
-        MAC_ADDRESS = prop.getProperty("app.MAC_ADDRESS");
-
+        readProps();
 
         GameService gameService = new GameService(FAVOURITE_TEAM.getTeamName());
         Game game = gameService.getGameInfo();
@@ -113,5 +101,24 @@ public class Main {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void readProps(){
+        Properties prop = new Properties();
+        String configName = "app.config";
+        try (FileInputStream fis = new FileInputStream(configName)) {
+            prop.load(fis);
+        } catch (IOException ex) {
+            System.out.println("app.config not found.");
+        }
+
+        GOAL_DELAY = Integer.parseInt(prop.getProperty("app.GOAL_DELAY"));
+        GOVEE_API_KEY = prop.getProperty("app.GOVEE_API_KEY");
+        TIME_FLASHING = Integer.parseInt(prop.getProperty("app.TIME_FLASHING"));
+        FLASH_INTERVAL = Integer.parseInt(prop.getProperty("app.FLASH_INTERVAL"));
+        GOVEE_MODEL = prop.getProperty("app.GOVEE_MODEL_LIGHT");
+        MAC_ADDRESS_LIGHT = prop.getProperty("app.MAC_ADDRESS_LIGHT");
+        MAC_ADDRESS_PLUG = prop.getProperty("app.MAC_ADDRESS_PLUG");
+        GOVEE_MODEL_PLUG = prop.getProperty("app.GOVEE_MODEL_PLUG");
     }
 }

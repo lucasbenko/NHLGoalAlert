@@ -6,11 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="NHL-Goal-Alert" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="NHL-Goal-Alert" target="19" />
-      <module name="NHLGoalAlert" target="19" />
-    </bytecodeTargetLevel>
   </component>
 </project>

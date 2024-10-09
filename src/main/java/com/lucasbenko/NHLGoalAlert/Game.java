@@ -4,9 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -94,7 +92,6 @@ public class Game {
             }
             scanner.close();
 
-            // Use Gson to parse the JSON response
             JsonObject jsonObject = JsonParser.parseString(informationString.toString()).getAsJsonObject();
             JsonArray gamesArray = jsonObject.getAsJsonArray("games");
 
@@ -118,26 +115,29 @@ public class Game {
                         this.awayScore = awayTeamJson.get("score").getAsInt();
                     }
 
-                    // Check if there is a score update for the favourite team
                     if (homeTeam.getName().equals(this.favouriteTeam) && (this.homeScore > lastHomeScore)) {
                         TimeUnit.SECONDS.sleep(Main.GOAL_DELAY);
                         System.out.println(homeTeam.getName() + " Goal! Current score: " + homeTeam.getName() + " " + this.homeScore + "-" + this.awayScore + " " + awayTeam.getName());
 
-                        Effect.powerToggle(1);
+                        Effect.toggleDevice(Main.MAC_ADDRESS_LIGHT, Main.GOVEE_MODEL, 1);
+                        Effect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 1);
                         new Thread(() -> Effect.flashLights(homeTeam)).start();
                         new Thread(() -> Effect.PlayHorn(homeTeam)).start();
                         TimeUnit.SECONDS.sleep(Main.TIME_FLASHING);
-                        Effect.powerToggle(0);
+                        Effect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 0);
+                        Effect.toggleDevice(Main.MAC_ADDRESS_LIGHT, Main.GOVEE_MODEL, 0);
 
                     } else if (awayTeam.getName().equals(this.favouriteTeam) && (this.awayScore > lastAwayScore)) {
                         TimeUnit.SECONDS.sleep(Main.GOAL_DELAY);
                         System.out.println(awayTeam.getName() + " Goal! Current score: " + homeTeam.getName() + " " + this.homeScore + "-" + this.awayScore + " " + awayTeam.getName());
 
-                        Effect.powerToggle(1);
-                        new Thread(() -> Effect.flashLights(awayTeam)).start();
+                        Effect.toggleDevice(Main.MAC_ADDRESS_LIGHT, Main.GOVEE_MODEL, 1);
+                        new Thread(() -> Effect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 1));
                         new Thread(() -> Effect.PlayHorn(awayTeam)).start();
+                        new Thread(() -> Effect.flashLights(awayTeam)).start();
                         TimeUnit.SECONDS.sleep(Main.TIME_FLASHING);
-                        Effect.powerToggle(0);
+                        new Thread(() -> Effect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 0));
+                        Effect.toggleDevice(Main.MAC_ADDRESS_LIGHT, Main.GOVEE_MODEL, 0);
                     }
 
                     // Update game state

@@ -23,8 +23,8 @@ public class Team {
         return name;
     }
 
-    public void setEffectID(long effectID){
-        effectID = this.effectID;
+    public void setEffectID(long effect){
+        effectID = Effect.getTeamEffect(name);
     }
 
     public long getEffectID(){
