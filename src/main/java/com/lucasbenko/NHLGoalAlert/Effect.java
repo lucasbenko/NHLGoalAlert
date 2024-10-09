@@ -11,10 +11,6 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.Request;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.FileInputStream;
 import java.io.*;
@@ -23,7 +19,7 @@ import java.io.*;
 public class Effect {
     private static OkHttpClient client = new OkHttpClient();
     public static void flashLights(Team t) {
-        String macAddress = Main.MAC_ADDRESS;
+        String macAddressLight = Main.MAC_ADDRESS_LIGHT;
         String model = Main.GOVEE_MODEL;
 
         OkHttpClient client = new OkHttpClient();
@@ -32,7 +28,35 @@ public class Effect {
 
         long effectID = t.getEffectID();
 
-        String requestString = "{\"requestId\":\"1\",\"payload\":{\"sku\":\"" + model + "\",\"device\":\"" + macAddress + "\",\"capability\":{\"type\":\"devices.capabilities.dynamic_scene\",\"instance\":\"diyScene\",\"value\":" + effectID + "}}}";
+        String requestString = "{\"requestId\":\"1\",\"payload\":{\"sku\":\"" + model + "\",\"device\":\"" + macAddressLight + "\",\"capability\":{\"type\":\"devices.capabilities.dynamic_scene\",\"instance\":\"diyScene\",\"value\":" + effectID + "}}}";
+
+        RequestBody body = RequestBody.create(mediaType, requestString);
+        Request request = new Request.Builder()
+                .url("https://openapi.api.govee.com/router/api/v1/device/control")  // Correct URL
+                .post(body)  // Use POST
+                .addHeader("accept", "application/json")
+                .addHeader("content-type", "application/json")
+                .addHeader("Govee-API-Key", Main.GOVEE_API_KEY)
+                .build();
+
+        try {
+            Response response = client.newCall(request).execute();
+            response.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /*
+    public static void toggleHornLight(int state){ // Use to trigger siren light
+        String macAddress = Main.MAC_ADDRESS_PLUG;
+        String model = Main.GOVEE_MODEL_PLUG;
+
+        //state 0 = off, state 1 = on
+
+        MediaType mediaType = MediaType.parse("application/json");
+
+        String requestString = "{\"requestId\":\"" + "uuid" + "\",\"payload\":{\"sku\":\"" + model + "\",\"device\":\"" + macAddress + "\",\"capability\":{\"type\":\"devices.capabilities.on_off\",\"instance\":\"powerSwitch\",\"value\":" + state + "}}}";
 
         RequestBody body = RequestBody.create(mediaType, requestString);
         Request request = new Request.Builder()
@@ -52,26 +76,15 @@ public class Effect {
     }
 
 
-    public static void PlayHorn(Team t) {
-        Team team = t;
-        String filePath = "res/2023-24/" + team.getName().replace(" ", "_") + ".mp3";
-        new Thread(() -> {
-            try (FileInputStream fileInputStream = new FileInputStream(filePath)) {
-                Player player = new Player(fileInputStream);
-                player.play();
-            } catch (JavaLayerException | IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
+
 
     public static void powerToggle(int value){
-        String macAddress = Main.MAC_ADDRESS;
+        String macAddressLight = Main.MAC_ADDRESS_LIGHT;
         String model = Main.GOVEE_MODEL;
 
         MediaType mediaType = MediaType.parse("application/json");
 
-        String requestString = "{\"requestId\":\"" + "uuid" + "\",\"payload\":{\"sku\":\"" + model + "\",\"device\":\"" + macAddress + "\",\"capability\":{\"type\":\"devices.capabilities.on_off\",\"instance\":\"powerSwitch\",\"value\":" + value + "}}}";
+        String requestString = "{\"requestId\":\"" + "uuid" + "\",\"payload\":{\"sku\":\"" + model + "\",\"device\":\"" + macAddressLight + "\",\"capability\":{\"type\":\"devices.capabilities.on_off\",\"instance\":\"powerSwitch\",\"value\":" + value + "}}}";
 
         RequestBody body = RequestBody.create(mediaType, requestString);
         Request request = new Request.Builder()
@@ -89,12 +102,47 @@ public class Effect {
             throw new RuntimeException(e);
         }
     }
+*/
 
-    public static long getTeamEffect(String name) {
-        String macAddress = Main.MAC_ADDRESS;
-        String model = Main.GOVEE_MODEL;
+    public static void toggleDevice(String macAddress, String model, int state) {
         MediaType mediaType = MediaType.parse("application/json");
-        String requestString = "{\"requestId\":\"1\",\"payload\":{\"sku\":\"" + model + "\",\"device\":\"" + macAddress + "\"}}";
+
+        String requestString = "{\"requestId\":\"" + "uuid" + "\",\"payload\":{\"sku\":\"" + model + "\",\"device\":\"" + macAddress + "\",\"capability\":{\"type\":\"devices.capabilities.on_off\",\"instance\":\"powerSwitch\",\"value\":" + state + "}}}";
+        RequestBody body = RequestBody.create(mediaType, requestString);
+        Request request = new Request.Builder()
+                .url("https://openapi.api.govee.com/router/api/v1/device/control")
+                .post(body)  // Use POST
+                .addHeader("accept", "application/json")
+                .addHeader("content-type", "application/json")
+                .addHeader("Govee-API-Key", Main.GOVEE_API_KEY)
+                .build();
+
+        try {
+            Response response = client.newCall(request).execute();
+            response.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void PlayHorn(Team t) {
+        Team team = t;
+        String filePath = "res/2023-24/" + team.getName().replace(" ", "_") + ".mp3";
+        new Thread(() -> {
+            try (FileInputStream fileInputStream = new FileInputStream(filePath)) {
+                Player player = new Player(fileInputStream);
+                player.play();
+            } catch (JavaLayerException | IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+    public static long getTeamEffect(String name) {
+        String macAddressLight = Main.MAC_ADDRESS_LIGHT;
+        String model = Main.GOVEE_MODEL;
+
+        MediaType mediaType = MediaType.parse("application/json");
+        String requestString = "{\"requestId\":\"1\",\"payload\":{\"sku\":\"" + model + "\",\"device\":\"" + macAddressLight + "\"}}";
 
         RequestBody body = RequestBody.create(mediaType, requestString);
         Request request = new Request.Builder()
@@ -137,6 +185,30 @@ public class Effect {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public static void listDevices() {
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("https://openapi.api.govee.com/router/api/v1/user/devices")
+                .get()
+                .addHeader("accept", "application/json")
+                .addHeader("Govee-API-Key", Main.GOVEE_API_KEY)
+                .build();
+
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                String responseBody = response.body().string();
+                System.out.println("Devices: " + responseBody);
+            } else {
+                System.out.println("Failed to get devices. Code: " + response.code());
+            }
+            response.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

@@ -1,0 +1,142 @@
+package com.lucasbenko.NHLGoalAlert;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
+
+public class Main {
+    public static void main(String[] args) {
+        String status = CheckForGame.getGameInfo();
+    }
+
+}
+
+
+package com.lucasbenko.NHLGoalAlert;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
+
+public class CheckForGame {
+    private static final String favouriteTeam = "Avalanche";
+    public static void main(String[] args) {
+        getGameInfo();
+    }
+
+    public static String getGameInfo(){
+        JSONParser jsonParser = new JSONParser();
+        LocalDate currentDate = LocalDate.now();
+        String formattedCurrentDate = currentDate.toString();
+
+        try {
+            URL url = new URL("https://api-web.nhle.com/v1/score/" + formattedCurrentDate);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode != 200) {
+                throw new RuntimeException("HttpResponseCode: " + responseCode);
+            }
+
+            StringBuilder informationString = new StringBuilder();
+
+            Scanner scanner = new Scanner(url.openStream());
+
+            while (scanner.hasNext()) {
+                informationString.append(scanner.nextLine());
+            }
+
+            scanner.close();
+
+            // Parse the entire JSON response
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(informationString.toString());
+
+            // Get the games array
+            JSONArray gamesArray = (JSONArray) jsonObject.get("games");
+
+            // Iterate through the games and print only those that match the current date
+            for (Object gameObj : gamesArray) {
+                JSONObject game = (JSONObject) gameObj;
+                String gameDate = (String) game.get("gameDate");
+
+                if (gameDate.equals(formattedCurrentDate)) {
+                    // Print game details or store them as needed
+                    Object gameID = game.get("id");
+                    Object homeTeam = ((JSONObject)((JSONObject) game.get("homeTeam")).get("name")).get("default");
+                    Object awayTeam = ((JSONObject)((JSONObject) game.get("awayTeam")).get("name")).get("default");
+
+                    if (homeTeam.equals(favouriteTeam) || awayTeam.equals(favouriteTeam)){
+                        Object startTimeUTC = game.get("startTimeUTC");
+
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+                        ZonedDateTime startTime = ZonedDateTime.parse((String) startTimeUTC, DateTimeFormatter.ISO_DATE_TIME);
+                        ZonedDateTime currentTime = ZonedDateTime.parse(ZonedDateTime.now(ZoneOffset.UTC).format(formatter), DateTimeFormatter.ISO_DATE_TIME);
+
+                        long minutesDifference = ChronoUnit.MINUTES.between(currentTime, startTime);
+
+                        System.out.println("Game ID: " + gameID);
+                        System.out.println("Home Team: " + homeTeam);
+                        System.out.println("Away Team: " + awayTeam);
+                        System.out.println("Start Time (UTC): " + startTime);
+                        System.out.println("Current Time (UTC): " + currentTime);
+
+                        boolean oneHourAway = false;
+
+                        while(!oneHourAway){
+                            if (minutesDifference > 0 && minutesDifference < 60) {
+                                System.out.println("Start time is less than an hour away from the current time.");
+                                oneHourAway = true;
+                                GameMonitor.start(homeTeam, awayTeam, gameID);
+                            } else {
+                                System.out.println("Start time is not less than an hour away from the current time. Waiting one hour to check again.");
+                                TimeUnit.MINUTES.sleep(60);
+                            }
+                        }
+
+                    }
+
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+}
+
+package com.lucasbenko.NHLGoalAlert;
+
+public class GameMonitor {
+    public static void start(Object homeTeam, Object awayTeam, Object gameID) {
+        Game current = new Game(homeTeam, awayTeam, gameID);
+    }
+}
+
+

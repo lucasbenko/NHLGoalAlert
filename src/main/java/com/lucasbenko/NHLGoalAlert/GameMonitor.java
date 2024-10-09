@@ -2,7 +2,6 @@ package com.lucasbenko.NHLGoalAlert;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
-import java.util.concurrent.TimeUnit;
 
 public class GameMonitor {
 

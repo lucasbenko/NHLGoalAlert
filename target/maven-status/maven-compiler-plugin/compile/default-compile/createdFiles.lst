@@ -1,0 +1,9 @@
+com\lucasbenko\NHLGoalAlert\Effect.class
+com\lucasbenko\NHLGoalAlert\Main.class
+com\lucasbenko\NHLGoalAlert\Team.class
+com\lucasbenko\NHLGoalAlert\GameService.class
+com\lucasbenko\NHLGoalAlert\TeamNames.class
+com\lucasbenko\NHLGoalAlert\GameMonitor.class
+com\lucasbenko\NHLGoalAlert\RGB.class
+com\lucasbenko\NHLGoalAlert\Game.class
+com\lucasbenko\NHLGoalAlert\TeamColours.class
