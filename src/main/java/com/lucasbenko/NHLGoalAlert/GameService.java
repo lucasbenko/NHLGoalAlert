@@ -13,7 +13,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 public class GameService {
     private static String FAVOURITE_TEAM;
@@ -45,7 +44,6 @@ public class GameService {
             }
             scanner.close();
 
-            // Use Gson to parse the JSON
             JsonObject jsonObject = JsonParser.parseString(informationString.toString()).getAsJsonObject();
             JsonArray gamesArray = jsonObject.getAsJsonArray("games");
 
@@ -66,8 +64,8 @@ public class GameService {
                         ZonedDateTime currentTime = ZonedDateTime.now(ZoneOffset.UTC);
                         long minutesDifference = ChronoUnit.MINUTES.between(currentTime, startTime);
 
-                        long homeEffectID = Effect.getTeamEffect(homeTeam.getName());
-                        long awayEffectID = Effect.getTeamEffect(awayTeam.getName());
+                        long homeEffectID = GoveeEffect.getTeamEffect(homeTeam.getName());
+                        long awayEffectID = GoveeEffect.getTeamEffect(awayTeam.getName());
 
                         homeTeam.setEffectID(homeEffectID);
                         awayTeam.setEffectID(awayEffectID);
