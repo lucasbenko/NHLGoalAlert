@@ -1,3 +1,4 @@
 /res/*
 app.config
 !.gitignore
+/target/res/2023-24/*

@@ -2,13 +2,11 @@ package com.lucasbenko.NHLGoalAlert;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Properties;
-import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
@@ -21,40 +19,15 @@ public class Main {
     public static String GOVEE_MODEL;
     public static String GOVEE_MODEL_PLUG;
     private static TeamNames FAVOURITE_TEAM;
-    public static void main(String[] args) {
-        boolean valid = false;
 
-        while(!valid){
-            System.out.println("Please choose your favourite team:");
-            Scanner input = new Scanner(System.in);
-            int i = 0;
-            TeamNames[] choices = new TeamNames[33];
-            for (TeamNames name : TeamNames.values()){
-                i++;
-                choices[i] = name;
-                System.out.println(i + ".\t" + name.getTeamName().replace("_", " "));
-            }
+    public static String message;
 
-
-            try {
-                int choice = Integer.parseInt(input.nextLine());
-                if (choice > 32 || choice < 1) {
-                    throw new Exception();
-                }
-
-                valid = true;
-                FAVOURITE_TEAM = choices[choice];
-                System.out.println("Your Team: " + FAVOURITE_TEAM.getTeamName());
-            } catch (Exception var9) {
-                System.out.println("Please enter a valid number.");
-            }
-
-        }
-        initialize();
-    }
-
-    public static void initialize(){
+    public static void initialize(TeamNames selectedTeam){
         readProps();
+
+        FAVOURITE_TEAM = selectedTeam;
+
+        GUI.printToConsole("Initializing for team: " + FAVOURITE_TEAM.getTeamName());
 
         GameService gameService = new GameService(FAVOURITE_TEAM.getTeamName());
         Game game = gameService.getGameInfo();
@@ -66,10 +39,11 @@ public class Main {
                 GameMonitor.start(game.getHomeTeam(), game.getAwayTeam(), game.getGameId());
 
                 while (true) {
-                    game.refreshScore();
-                    TimeUnit.SECONDS.sleep(1); // Adjust the interval as needed
+                    GameMonitor.refreshScore(game);
+                    TimeUnit.SECONDS.sleep(1);
                     if (game.getGameState().equals("FINAL")){
-                        System.out.println("Tonight's game has concluded.");
+                        System.out.println("Tonight's game has concluded");
+                        GUI.printToConsole("Tonight's game has concluded");
                         waitUntilMidnight();
                         break;
                     }
@@ -79,6 +53,7 @@ public class Main {
             }
         } else {
             System.out.println("No game found for today: " + LocalDate.now());
+            GUI.printToConsole("No game found for today: " + LocalDate.now());
             waitUntilMidnight();
         }
     }
@@ -91,12 +66,13 @@ public class Main {
 
         synchronized (lock) {
             try {
-                System.out.println("Waiting until midnight local time to check again " + secondsUntilMidnight);
+                System.out.println("Waiting until midnight local time to check again");
+                GUI.printToConsole("Waiting until midnight local time to check again");
                 if (secondsUntilMidnight + 10 < -10) {
-                    initialize();
+                    initialize(FAVOURITE_TEAM);
                 }
                 lock.wait((secondsUntilMidnight + 10) * 1000);
-                initialize();
+                initialize(FAVOURITE_TEAM);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

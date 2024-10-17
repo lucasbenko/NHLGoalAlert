@@ -24,7 +24,7 @@ public class Team {
     }
 
     public void setEffectID(long effect){
-        effectID = Effect.getTeamEffect(name);
+        effectID = GoveeEffect.getTeamEffect(name);
     }
 
     public long getEffectID(){

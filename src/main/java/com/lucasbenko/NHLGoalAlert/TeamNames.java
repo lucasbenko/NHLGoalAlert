@@ -1,5 +1,7 @@
 package com.lucasbenko.NHLGoalAlert;
 
+import java.util.Random;
+
 public enum TeamNames {
     DUCKS("Ducks"),
     BRUINS("Bruins"),
@@ -44,6 +46,12 @@ public enum TeamNames {
     // Getter for teamName
     public String getTeamName() {
         return teamName;
+    }
+
+    public static TeamNames getRandomTeam() {
+        Random random = new Random();
+        TeamNames[] teams = TeamNames.values();
+        return teams[random.nextInt(teams.length)];
     }
 }
 
