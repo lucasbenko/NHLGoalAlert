@@ -2,3 +2,5 @@
 app.config
 !.gitignore
 /target/res/2023-24/*
+/target/*.zip
+/target/*.jar

@@ -1,3 +1,3 @@
 @echo off
-java -jar NHL-Goal-Alert-1.2-jar-with-dependencies.jar
+java -jar NHL-Goal-Alert-1.1-jar-with-dependencies.jar
 pause
