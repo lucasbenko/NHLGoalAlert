@@ -1,0 +1,14 @@
+This program currently supports Govee products, but ONLY one light and one smart plug, more support will be added in the future. 
+You can configure the MAC addresses and model numbers for these devices in the app.config file. A template for the configuration is provided in app.config.template. To use it, rename the file to app.config.
+
+Adding Goal Song/Horn Files:
+
+To add goal songs or horn sounds, place MP3 files in the res/2023-24 folder. Ensure the file names follow this format:
+
+Capitalize the first letter of each word.
+Replace spaces with underscores (_).
+
+Examples:
+Canucks.mp3
+Golden_Knights.mp3
+Utah_Hockey_Club.mp3
