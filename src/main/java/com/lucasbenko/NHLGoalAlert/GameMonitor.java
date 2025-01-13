@@ -126,9 +126,8 @@ public class GameMonitor {
                         System.out.println(homeTeam.getName() + " Goal! " + homeTeam.getName() + " " + game.getHomeScore() + "-" + game.getAwayScore() + " " + awayTeam.getName());
 
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 1);
-                        GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 1);
                         new Thread(() -> GoveeEffect.flashLights(homeTeam)).start();
-                        new Thread(() -> GoveeEffect.PlayHorn(homeTeam)).start();
+                        new Thread(() -> GoveeEffect.PlayHorn(homeTeam, 0)).start(); // 1 = away team 0 = home team
                         TimeUnit.SECONDS.sleep(Main.TIME_FLASHING);
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 0);
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_LIGHT, Main.GOVEE_MODEL, 0);
@@ -138,9 +137,8 @@ public class GameMonitor {
                         System.out.println(awayTeam.getName() + " Goal! " + awayTeam.getName() + " " + game.getAwayScore() + "-" + game.getHomeScore() + " " + homeTeam.getName());
 
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 1);
-                        GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 1);
                         new Thread(() -> GoveeEffect.flashLights(awayTeam)).start();
-                        new Thread(() -> GoveeEffect.PlayHorn(awayTeam)).start();
+                        new Thread(() -> GoveeEffect.PlayHorn(awayTeam, 1)).start(); // 1 = away team 0 = home team
                         TimeUnit.SECONDS.sleep(Main.TIME_FLASHING);
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 0);
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_LIGHT, Main.GOVEE_MODEL, 0);
@@ -153,10 +151,9 @@ public class GameMonitor {
                         GUI.printToConsole(homeTeam.getName() + " Win!");
                         System.out.println(homeTeam.getName() + " Win!");
 
-                        GoveeEffect.toggleDevice(Main.MAC_ADDRESS_LIGHT, Main.GOVEE_MODEL, 1);
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 1);
                         new Thread(() -> GoveeEffect.flashLights(homeTeam)).start();
-                        new Thread(() -> GoveeEffect.PlayHorn(homeTeam)).start();
+                        new Thread(() -> GoveeEffect.PlayHorn(homeTeam, 0)).start();
                         TimeUnit.SECONDS.sleep(Main.TIME_FLASHING);
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 0);
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_LIGHT, Main.GOVEE_MODEL, 0);
@@ -165,10 +162,9 @@ public class GameMonitor {
                         GUI.printToConsole(awayTeam.getName() + " Win!");
                         System.out.println(awayTeam.getName() + " Win!");
 
-                        GoveeEffect.toggleDevice(Main.MAC_ADDRESS_LIGHT, Main.GOVEE_MODEL, 1);
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 1);
                         new Thread(() -> GoveeEffect.flashLights(awayTeam)).start();
-                        new Thread(() -> GoveeEffect.PlayHorn(awayTeam)).start();
+                        new Thread(() -> GoveeEffect.PlayHorn(awayTeam, 1)).start();
                         TimeUnit.SECONDS.sleep(Main.TIME_FLASHING);
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 0);
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_LIGHT, Main.GOVEE_MODEL, 0);
@@ -199,7 +195,7 @@ public class GameMonitor {
         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_LIGHT, Main.GOVEE_MODEL, 1);
         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 1);
         new Thread(() -> GoveeEffect.flashLights(t)).start();
-        new Thread(() -> GoveeEffect.PlayHorn(t)).start();
+        new Thread(() -> GoveeEffect.PlayHorn(t, 1)).start();
         try {
             TimeUnit.SECONDS.sleep(Main.TIME_FLASHING);
         } catch (InterruptedException e) {
