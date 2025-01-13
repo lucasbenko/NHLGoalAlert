@@ -16,6 +16,8 @@ public class Main {
     public static String GOVEE_API_KEY;
     public static String MAC_ADDRESS_LIGHT;
     public static String MAC_ADDRESS_PLUG;
+    public static String MAC_ADDRESS_LIGHT_2;
+    public static String GOVEE_MODEL_2;
     public static String GOVEE_MODEL;
     public static String GOVEE_MODEL_PLUG;
     private static TeamNames FAVOURITE_TEAM;
@@ -92,8 +94,16 @@ public class Main {
         GOVEE_API_KEY = prop.getProperty("app.GOVEE_API_KEY");
         TIME_FLASHING = Integer.parseInt(prop.getProperty("app.TIME_FLASHING"));
         FLASH_INTERVAL = Integer.parseInt(prop.getProperty("app.FLASH_INTERVAL"));
+
+        //Light 1
         GOVEE_MODEL = prop.getProperty("app.GOVEE_MODEL_LIGHT");
         MAC_ADDRESS_LIGHT = prop.getProperty("app.MAC_ADDRESS_LIGHT");
+
+        //Light 2
+        GOVEE_MODEL_2 = prop.getProperty("app.GOVEE_MODEL_LIGHT_2");
+        MAC_ADDRESS_LIGHT_2 = prop.getProperty("app.MAC_ADDRESS_LIGHT_2");
+
+        // Smart Plug
         MAC_ADDRESS_PLUG = prop.getProperty("app.MAC_ADDRESS_PLUG");
         GOVEE_MODEL_PLUG = prop.getProperty("app.GOVEE_MODEL_PLUG");
     }
