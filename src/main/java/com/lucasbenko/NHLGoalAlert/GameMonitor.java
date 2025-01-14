@@ -126,22 +126,26 @@ public class GameMonitor {
                         System.out.println(homeTeam.getName() + " Goal! " + homeTeam.getName() + " " + game.getHomeScore() + "-" + game.getAwayScore() + " " + awayTeam.getName());
 
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 1);
-                        new Thread(() -> GoveeEffect.flashLights(homeTeam)).start();
+                        new Thread(() -> GoveeEffect.flashLights(homeTeam, Main.MAC_ADDRESS_LIGHT)).start();
+                        new Thread(() -> GoveeEffect.flashLights(homeTeam, Main.MAC_ADDRESS_LIGHT_2)).start();
                         new Thread(() -> GoveeEffect.PlayHorn(homeTeam, 0)).start(); // 1 = away team 0 = home team
                         TimeUnit.SECONDS.sleep(Main.TIME_FLASHING);
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 0);
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_LIGHT, Main.GOVEE_MODEL, 0);
+                        GoveeEffect.toggleDevice(Main.MAC_ADDRESS_LIGHT_2, Main.GOVEE_MODEL, 0);
                     } else if (awayTeam.getName().equals(game.getFavouriteTeam()) && (game.getAwayScore() > lastAwayScore)) {
                         TimeUnit.SECONDS.sleep(Main.GOAL_DELAY);
                         GUI.printToConsole(awayTeam.getName() + " Goal! " + awayTeam.getName() + " " + game.getAwayScore() + "-" + game.getHomeScore() + " " + homeTeam.getName());
                         System.out.println(awayTeam.getName() + " Goal! " + awayTeam.getName() + " " + game.getAwayScore() + "-" + game.getHomeScore() + " " + homeTeam.getName());
 
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 1);
-                        new Thread(() -> GoveeEffect.flashLights(awayTeam)).start();
+                        new Thread(() -> GoveeEffect.flashLights(awayTeam, Main.MAC_ADDRESS_LIGHT)).start();
+                        new Thread(() -> GoveeEffect.flashLights(awayTeam, Main.MAC_ADDRESS_LIGHT_2)).start();
                         new Thread(() -> GoveeEffect.PlayHorn(awayTeam, 1)).start(); // 1 = away team 0 = home team
                         TimeUnit.SECONDS.sleep(Main.TIME_FLASHING);
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 0);
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_LIGHT, Main.GOVEE_MODEL, 0);
+                        GoveeEffect.toggleDevice(Main.MAC_ADDRESS_LIGHT_2, Main.GOVEE_MODEL, 0);
                     }
 
                     game.setGameState(gameobj.get("gameState").getAsString()); // Get game state
@@ -152,22 +156,26 @@ public class GameMonitor {
                         System.out.println(homeTeam.getName() + " Win!");
 
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 1);
-                        new Thread(() -> GoveeEffect.flashLights(homeTeam)).start();
+                        new Thread(() -> GoveeEffect.flashLights(homeTeam, Main.MAC_ADDRESS_LIGHT)).start();
+                        new Thread(() -> GoveeEffect.flashLights(homeTeam, Main.MAC_ADDRESS_LIGHT_2)).start();
                         new Thread(() -> GoveeEffect.PlayHorn(homeTeam, 0)).start();
                         TimeUnit.SECONDS.sleep(Main.TIME_FLASHING);
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 0);
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_LIGHT, Main.GOVEE_MODEL, 0);
+
                     } else if (awayTeam.getName().equals(game.getFavouriteTeam()) && (game.getAwayScore() > game.getHomeScore()) && game.getGameState().equalsIgnoreCase("FINAL")) {
                         TimeUnit.SECONDS.sleep(Main.GOAL_DELAY);
                         GUI.printToConsole(awayTeam.getName() + " Win!");
                         System.out.println(awayTeam.getName() + " Win!");
 
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 1);
-                        new Thread(() -> GoveeEffect.flashLights(awayTeam)).start();
+                        new Thread(() -> GoveeEffect.flashLights(awayTeam, Main.MAC_ADDRESS_LIGHT)).start();
+                        new Thread(() -> GoveeEffect.flashLights(awayTeam, Main.MAC_ADDRESS_LIGHT_2)).start();
                         new Thread(() -> GoveeEffect.PlayHorn(awayTeam, 1)).start();
                         TimeUnit.SECONDS.sleep(Main.TIME_FLASHING);
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 0);
                         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_LIGHT, Main.GOVEE_MODEL, 0);
+                        GoveeEffect.toggleDevice(Main.MAC_ADDRESS_LIGHT_2, Main.GOVEE_MODEL, 0);
                     }
 
                     break;
@@ -192,9 +200,9 @@ public class GameMonitor {
         int randomNumberAway = random.nextInt(4) + 1;
         GUI.printToConsole(t.getName() + " Goal! " + t.getName() + " " + randomNumberHome + "-" + randomNumberAway + " " + TeamNames.getRandomTeam().getTeamName());
 
-        GoveeEffect.toggleDevice(Main.MAC_ADDRESS_LIGHT, Main.GOVEE_MODEL, 1);
         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 1);
-        new Thread(() -> GoveeEffect.flashLights(t)).start();
+        new Thread(() -> GoveeEffect.flashLights(t, Main.MAC_ADDRESS_LIGHT)).start();
+        new Thread(() -> GoveeEffect.flashLights(t, Main.MAC_ADDRESS_LIGHT_2)).start();
         new Thread(() -> GoveeEffect.PlayHorn(t, 1)).start();
         try {
             TimeUnit.SECONDS.sleep(Main.TIME_FLASHING);
@@ -203,5 +211,6 @@ public class GameMonitor {
         }
         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_PLUG, Main.GOVEE_MODEL_PLUG, 0);
         GoveeEffect.toggleDevice(Main.MAC_ADDRESS_LIGHT, Main.GOVEE_MODEL, 0);
+        GoveeEffect.toggleDevice(Main.MAC_ADDRESS_LIGHT_2, Main.GOVEE_MODEL, 0);
     }
 }
