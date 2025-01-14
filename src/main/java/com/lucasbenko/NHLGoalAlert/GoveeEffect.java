@@ -18,12 +18,8 @@ import java.io.*;
 
 public class GoveeEffect {
     private static OkHttpClient client = new OkHttpClient();
-    public static void flashLights(Team t) {
-        String[] macAddresses = {Main.MAC_ADDRESS_LIGHT, Main.MAC_ADDRESS_LIGHT_2};
+    public static void flashLights(Team t, String macAddressLight) {
         String model = Main.GOVEE_MODEL;
-
-        for (String macAddressLight : macAddresses){
-            //String macAddressLight = Main.MAC_ADDRESS_LIGHT;
 
             OkHttpClient client = new OkHttpClient();
 
@@ -48,7 +44,7 @@ public class GoveeEffect {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }
+
     }
 
     public static void toggleDevice(String macAddress, String model, int state) {
